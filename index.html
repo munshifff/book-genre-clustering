@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodreads Book Clustering</title>
+</head>
+<body>
+    <h1>Goodreads Book Clustering</h1>
+    
+    <form id="bookForm">
+        <label>Title:</label><br>
+        <input type="text" id="title" required><br><br>
+
+        <label>Author:</label><br>
+        <input type="text" id="author" required><br><br>
+
+        <label>Average Rating:</label><br>
+        <input type="number" step="0.01" id="avg_rating" required><br><br>
+
+        <label>Number of Ratings:</label><br>
+        <input type="number" id="num_rating" required><br><br>
+
+        <button type="submit">Get Cluster</button>
+    </form>
+
+    <h2 id="result"></h2>
+
+    <br><br>
+    <h3>0: "Mystery & Thriller"</h3>
+    <h3>1: "Horror / Suspense"</h3>
+    <h3>2: "Fiction & Fantasy"</h3>
+    <h3>3: "Fantasy & Sci-Fi"</h3>
+    <h3>4: "YA & Adventure"</h3>
+    <script>
+        const form = document.getElementById('bookForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const avg_rating = document.getElementById('avg_rating').value;
+            const num_rating = document.getElementById('num_rating').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, author, avg_rating, num_rating })
+                });
+
+                const data = await response.json();
+                document.getElementById('result').innerText = `Cluster: ${data.cluster}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error connecting to API';
+            }
+        });
+    </script>
+</body>
+</html>
